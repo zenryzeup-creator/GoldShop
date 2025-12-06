@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buyurtmani Rasmiylashtirish</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f5f9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; 
+            padding-top: 50px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #1f2937;
+        }
+
+        .header h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: #7000ff;
+            box-shadow: 0 0 0 2px rgba(112, 0, 255, 0.1);
+        }
+
+        .card-input-group {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+        }
+
+        .card-input-group input {
+            width: 100%;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: #7000ff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #5f00d9;
+        }
+
+        /* Muvaffaqiyat xabari stili */
+        #successMessage {
+            display: none; 
+            text-align: center;
+            padding: 40px 20px;
+            background: #e6f7ee; 
+            border: 1px solid #8fe7b4;
+            border-radius: 12px;
+            margin-top: 20px;
+            color: #10b981; 
+            animation: fadeIn 0.5s;
+        }
+
+        #successMessage h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #065f46;
+        }
+
+        #successMessage p {
+            font-size: 15px;
+            color: #047857;
+        }
+        
+        /* Qayta yo'naltirish xabari stili */
+        #redirecting {
+            font-size: 13px;
+            color: #047857;
+            margin-top: 15px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="checkoutForm">
+            <div class="header">
+                <h2>🛍️ Buyurtmani yakunlash</h2>
+                <p style="color: #9ca3af; font-size: 14px;">Ma'lumotlaringizni kiriting va buyurtma bering</p>
+            </div>
+
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="phone">Telefon raqami</label>
+                    <input type="tel" id="phone" placeholder="+998 XX YYY YY YY" required 
+                           minlength="9" maxlength="15" 
+                           oninput="this.value = this.value.replace(/[^0-9+]/g, '').slice(0, 15)">
+                </div>
+
+                <div class="form-group">
+                    <label>To'lov kartasi ma'lumotlari</label>
+                    <input type="text" id="cardNumber" placeholder="Karta raqami (XXXX XXXX XXXX XXXX)" required 
+                           minlength="16" maxlength="19" 
+                           oninput="formatCardNumber(this)">
+                </div>
+
+                <div class="card-input-group">
+                    <div class="form-group">
+                        <label for="expiry">Muddati (MM/YY)</label>
+                        <input type="text" id="expiry" placeholder="MM/YY" required 
+                               minlength="5" maxlength="5"
+                               oninput="formatExpiry(this)">
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV</label>
+                        <input type="text" id="cvv" placeholder="***" required 
+                               minlength="3" maxlength="3"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 3)">
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Buyurtmani tasdiqlash</button>
+            </form>
+        </div>
+
+        <div id="successMessage">
+            <h3>✅ Buyurtma qabul qilindi!</h3>
+            <p>Buyurtmangiz muvaffaqiyatli rasmiylashtirildi. Tez orada operatorimiz siz bilan bog'lanadi.</p>
+            <p style="margin-top: 10px;">Rahmat, Gold-Shop jamoasi!</p>
+            
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('orderForm').addEventListener('submit', function(event) {
+            event.preventDefault(); 
+
+            const phone = document.getElementById('phone').value;
+            const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+            const expiry = document.getElementById('expiry').value;
+            const cvv = document.getElementById('cvv').value;
+
+            if (phone.length < 9 || cardNumber.length < 16 || expiry.length !== 5 || cvv.length !== 3) {
+                alert("Iltimos, barcha maydonlarni to'g'ri to'ldiring.");
+                return;
+            }
+
+            // Muvaffaqiyat xabarini ko'rsatish
+            document.getElementById('checkoutForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+
+            // ✅ MUHIM QISM: 3 soniyadan keyin market.html ga yo'naltirish
+            setTimeout(function() {
+                window.location.href = 'market.html';
+            }, 3000); // 3000 millisekund = 3 soniya
+        });
+
+        // Karta raqamini formatlash funksiyasi (XXXX XXXX XXXX XXXX)
+        function formatCardNumber(input) {
+            let value = input.value.replace(/\s/g, '').replace(/[^0-9]/g, '');
+            let formattedValue = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) {
+                    formattedValue += ' ';
+                }
+                formattedValue += value[i];
+            }
+            input.value = formattedValue.slice(0, 19);
+        }
+
+        // Karta muddatini formatlash funksiyasi (MM/YY)
+        function formatExpiry(input) {
+            let value = input.value.replace(/\//g, '').replace(/[^0-9]/g, '');
+            if (value.length > 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            input.value = value.slice(0, 5);
+        }
+
+    </script>
+
+</body>
+</html>

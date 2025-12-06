@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buyurtmalar tarixi - GoldShop</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: #f4f5f9;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: white;
+      padding: 16px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .back-btn {
+      background: #f3f4f6;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: #e5e7eb;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #7000ff;
+      text-decoration: none;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+      color: #6b7280;
+      font-size: 15px;
+    }
+
+    /* Filters */
+    .filters {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 10px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      border-color: #7000ff;
+      color: #7000ff;
+    }
+
+    .filter-btn.active {
+      background: #7000ff;
+      color: white;
+      border-color: #7000ff;
+    }
+
+    /* Orders List */
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .order-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: all 0.2s;
+    }
+
+    .order-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .order-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .order-number {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .order-date {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .order-status {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .status-delivered {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-processing {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-shipped {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-cancelled {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .order-items {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .order-item {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .item-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #f9fafb;
+    }
+
+    .item-details {
+      flex: 1;
+    }
+
+    .item-title {
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 4px;
+    }
+
+    .item-meta {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .item-price {
+      font-weight: 700;
+      color: #7000ff;
+      font-size: 18px;
+    }
+
+    .order-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .order-total {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #7000ff;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5f00d9;
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #4b5563;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      background: white;
+      border-radius: 12px;
+    }
+
+    .empty-state svg {
+      width: 80px;
+      height: 80px;
+      color: #d1d5db;
+      margin-bottom: 16px;
+    }
+
+    .empty-state h2 {
+      font-size: 24px;
+      color: #1f2937;
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      color: #6b7280;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .order-header {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .order-footer {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+      }
+      .order-actions {
+        flex-direction: column;
+      }
+      .item-image {
+        width: 60px;
+        height: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <button class="back-btn" onclick="window.location.href='market.html'">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <a href="market.html" class="logo">
+        <span style="background: #7000ff; color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">G</span>
+        Gold-Shop
+      </a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">Buyurtmalar tarixi</h1>
+      <p class="page-subtitle">Barcha buyurtmalaringizni kuzatib boring</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterOrders('all')">Hammasi</button>
+      <button class="filter-btn" onclick="filterOrders('delivered')">Yetkazilgan</button>
+      <button class="filter-btn" onclick="filterOrders('processing')">Jarayonda</button>
+      <button class="filter-btn" onclick="filterOrders('shipped')">Yo'lda</button>
+      <button class="filter-btn" onclick="filterOrders('cancelled')">Bekor qilingan</button>
+    </div>
+
+    <!-- Orders List -->
+    <div id="ordersList" class="orders-list">
+      <!-- JavaScript bilan to'ldiriladi -->
+    </div>
+  </div>
+
+  <script>
+    // Demo buyurtmalar ma'lumotlari
+    const orders = [
+      {
+        id: "ORD-2024-001",
+        date: "06.12.2024",
+        status: "delivered",
+        statusText: "Yetkazilgan",
+        items: [
+          {
+            title: "Premium Wireless Headphones",
+            quantity: 1,
+            price: 299,
+            image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200"
+          },
+          {
+            title: "Smart Watch Pro",
+            quantity: 1,
+            price: 399,
+            image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200"
+          }
+        ],
+        total: 698
+      },
+      {
+        id: "ORD-2024-002",
+        date: "05.12.2024",
+        status: "shipped",
+        statusText: "Yo'lda",
+        items: [
+          {
+            title: "Modern Backpack",
+            quantity: 2,
+            price: 89,
+            image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200"
+          }
+        ],
+        total: 178
+      },
+      {
+        id: "ORD-2024-003",
+        date: "03.12.2024",
+        status: "processing",
+        statusText: "Tayyorlanmoqda",
+        items: [
+          {
+            title: "Leather Wallet",
+            quantity: 1,
+            price: 59,
+            image: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=200"
+          },
+          {
+            title: "Running Shoes",
+            quantity: 1,
+            price: 129,
+            image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200"
+          }
+        ],
+        total: 188
+      },
+      {
+        id: "ORD-2024-004",
+        date: "28.11.2024",
+        status: "delivered",
+        statusText: "Yetkazilgan",
+        items: [
+          {
+            title: "Coffee Maker Deluxe",
+            quantity: 1,
+            price: 159,
+            image: "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=200"
+          }
+        ],
+        total: 159
+      },
+      {
+        id: "ORD-2024-005",
+        date: "20.11.2024",
+        status: "cancelled",
+        statusText: "Bekor qilingan",
+        items: [
+          {
+            title: "Bluetooth Speaker",
+            quantity: 1,
+            price: 79,
+            image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=200"
+          }
+        ],
+        total: 79
+      }
+    ];
+
+    let currentFilter = 'all';
+
+    function filterOrders(status) {
+      currentFilter = status;
+      
+      // Filter tugmalarini yangilash
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      renderOrders();
+    }
+
+    function renderOrders() {
+      const container = document.getElementById('ordersList');
+      
+      let filtered = currentFilter === 'all' 
+        ? orders 
+        : orders.filter(order => order.status === currentFilter);
+      
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            <h2>Buyurtmalar yo'q</h2>
+            <p>Siz hali buyurtma bermagansiz</p>
+            <button class="btn btn-primary" onclick="window.location.href='market.html'">
+              Do'konni ko'rish
+            </button>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = filtered.map(order => `
+        <div class="order-card">
+          <div class="order-header">
+            <div class="order-info">
+              <div class="order-number">${order.id}</div>
+              <div class="order-date">📅 ${order.date}</div>
+            </div>
+            <div class="order-status status-${order.status}">
+              ${order.statusText}
+            </div>
+          </div>
+          
+          <div class="order-items">
+            ${order.items.map(item => `
+              <div class="order-item">
+                <img src="${item.image}" alt="${item.title}" class="item-image" 
+                  onerror="this.src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200'" />
+                <div class="item-details">
+                  <div class="item-title">${item.title}</div>
+                  <div class="item-meta">Miqdor: ${item.quantity}x</div>
+                </div>
+                <div class="item-price">$${item.price}</div>
+              </div>
+            `).join('')}
+          </div>
+          
+          <div class="order-footer">
+            <div class="order-total">Jami: $${order.total}</div>
+            <div class="order-actions">
+              ${order.status === 'delivered' 
+                ? '<button class="btn btn-primary" onclick="reorder(\'' + order.id + '\')">Qayta buyurtma</button>' 
+                : ''}
+              <button class="btn btn-secondary" onclick="viewDetails('${order.id}')">Batafsil</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function reorder(orderId) {
+      alert(`Buyurtma ${orderId} qayta rasmiylashtirilmoqda...`);
+      // Bu yerda savatga mahsulotlarni qo'shish logikasi bo'lishi kerak
+    }
+
+    function viewDetails(orderId) {
+      alert(`Buyurtma ${orderId} haqida batafsil ma'lumot ko'rsatilmoqda...`);
+      // Bu yerda batafsil sahifaga o'tish bo'lishi kerak
+    }
+
+    // Sahifa yuklanganda buyurtmalarni ko'rsatish
+    renderOrders();
+  </script>
+
+</body>
+</html>

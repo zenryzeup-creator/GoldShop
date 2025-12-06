@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mahsulot - GoldShop</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: #f4f5f9;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: white;
+      padding: 16px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .back-btn {
+      background: #f3f4f6;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: #e5e7eb;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #7000ff;
+      text-decoration: none;
+    }
+
+    /* Main Content */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    .product-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    /* Gallery */
+    .gallery-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .main-image {
+      width: 100%;
+      height: 500px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f9fafb;
+      position: relative;
+    }
+
+    .main-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .zoom-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .thumbnails {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+    }
+
+    .thumbnail {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .thumbnail:hover {
+      border-color: #7000ff;
+    }
+
+    .thumbnail.active {
+      border-color: #7000ff;
+    }
+
+    .thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Product Info */
+    .product-info {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      gap: 8px;
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .breadcrumb a {
+      color: #6b7280;
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      color: #7000ff;
+    }
+
+    .product-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1f2937;
+      line-height: 1.3;
+    }
+
+    .rating-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stars {
+      display: flex;
+      gap: 4px;
+      color: #fbbf24;
+    }
+
+    .rating-text {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .price-section {
+      padding: 20px;
+      background: #f9fafb;
+      border-radius: 12px;
+    }
+
+    .current-price {
+      font-size: 36px;
+      font-weight: 700;
+      color: #7000ff;
+    }
+
+    .old-price {
+      font-size: 20px;
+      color: #9ca3af;
+      text-decoration: line-through;
+      margin-left: 12px;
+    }
+
+    .discount-badge {
+      display: inline-block;
+      background: #10b981;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .description {
+      color: #4b5563;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .features {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      background: #7000ff;
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .feature-text {
+      font-size: 14px;
+      color: #4b5563;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .add-to-cart {
+      flex: 1;
+      background: #7000ff;
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .add-to-cart:hover {
+      background: #5f00d9;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(112,0,255,0.3);
+    }
+
+    .wishlist-btn {
+      width: 56px;
+      height: 56px;
+      background: #f3f4f6;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .wishlist-btn:hover {
+      background: #ffe4e6;
+      color: #ef4444;
+    }
+
+    /* Reviews Section */
+    .reviews-section {
+      margin-top: 48px;
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .review-summary {
+      display: flex;
+      gap: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #e5e7eb;
+      margin-bottom: 24px;
+    }
+
+    .rating-overview {
+      text-align: center;
+    }
+
+    .big-rating {
+      font-size: 48px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .rating-bars {
+      flex: 1;
+    }
+
+    .rating-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .bar-label {
+      font-size: 14px;
+      color: #6b7280;
+      width: 60px;
+    }
+
+    .bar {
+      flex: 1;
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: #fbbf24;
+      border-radius: 4px;
+    }
+
+    .bar-count {
+      font-size: 14px;
+      color: #6b7280;
+      width: 40px;
+      text-align: right;
+    }
+
+    .reviews-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .review-item {
+      padding: 24px;
+      background: #f9fafb;
+      border-radius: 12px;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .reviewer-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .reviewer-avatar {
+      width: 40px;
+      height: 40px;
+      background: #7000ff;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .reviewer-name {
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .review-date {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    .review-text {
+      color: #4b5563;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .product-layout {
+        grid-template-columns: 1fr;
+        padding: 24px;
+      }
+      .main-image {
+        height: 400px;
+      }
+      .review-summary {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <button class="back-btn" onclick="window.history.back()">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <a href="market.html" class="logo">
+        <span style="background: #7000ff; color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">G</span>
+        Gold-Shop
+      </a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="product-layout">
+      <!-- Gallery -->
+      <div class="gallery-section">
+        <div class="main-image">
+          <img id="mainImage" src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800" alt="Product" />
+          <div class="zoom-badge">
+            🔍 Kattalashtirish
+          </div>
+        </div>
+        <div class="thumbnails" id="thumbnails">
+          <!-- JavaScript bilan to'ldiriladi -->
+        </div>
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info">
+        <div class="breadcrumb">
+          <a href="market.html">Bosh sahifa</a>
+          <span>/</span>
+          <span id="breadcrumbCategory">Elektronika</span>
+          <span>/</span>
+          <span id="breadcrumbProduct">Mahsulot</span>
+        </div>
+
+        <h1 class="product-title" id="productTitle">Premium Wireless Headphones</h1>
+
+        <div class="rating-section">
+          <div class="stars" id="productStars">
+            ★★★★★
+          </div>
+          <span class="rating-text" id="ratingText">4.8 (127 sharh)</span>
+        </div>
+
+        <div class="price-section">
+          <div>
+            <span class="current-price" id="currentPrice">$299</span>
+            <span class="old-price" id="oldPrice">$399</span>
+          </div>
+          <span class="discount-badge" id="discountBadge">25% chegirma</span>
+        </div>
+
+        <p class="description" id="productDescription">
+          Professional sifatli simsiz quloqlik. Shovqinni yo'q qilish texnologiyasi, 30 soatgacha batareya quvvati va yuqori sifatli audio. Qulay dizayn va ajoyib ovoz sifati.
+        </p>
+
+        <div class="features">
+          <div class="feature-item">
+            <div class="feature-icon">🚚</div>
+            <div class="feature-text">Bepul yetkazib berish 3 kun ichida</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">✅</div>
+            <div class="feature-text">1 yillik kafolat</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🔄</div>
+            <div class="feature-text">14 kun ichida qaytarish mumkin</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="add-to-cart" onclick="addToCart()">
+            🛒 Savatga qo'shish
+          </button>
+          <button class="wishlist-btn" onclick="toggleWishlist()">
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="reviews-section">
+      <h2 class="section-title">Sharhlar va reytinglar</h2>
+      
+      <div class="review-summary">
+        <div class="rating-overview">
+          <div class="big-rating">4.8</div>
+          <div class="stars">★★★★★</div>
+          <div style="color: #6b7280; font-size: 14px; margin-top: 8px;">127 sharh</div>
+        </div>
+
+        <div class="rating-bars">
+          <div class="rating-bar">
+            <span class="bar-label">5 ★</span>
+            <div class="bar"><div class="bar-fill" style="width: 80%"></div></div>
+            <span class="bar-count">102</span>
+          </div>
+          <div class="rating-bar">
+            <span class="bar-label">4 ★</span>
+            <div class="bar"><div class="bar-fill" style="width: 15%"></div></div>
+            <span class="bar-count">19</span>
+          </div>
+          <div class="rating-bar">
+            <span class="bar-label">3 ★</span>
+            <div class="bar"><div class="bar-fill" style="width: 3%"></div></div>
+            <span class="bar-count">4</span>
+          </div>
+          <div class="rating-bar">
+            <span class="bar-label">2 ★</span>
+            <div class="bar"><div class="bar-fill" style="width: 1%"></div></div>
+            <span class="bar-count">1</span>
+          </div>
+          <div class="rating-bar">
+            <span class="bar-label">1 ★</span>
+            <div class="bar"><div class="bar-fill" style="width: 1%"></div></div>
+            <span class="bar-count">1</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reviews-list">
+        <div class="review-item">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <div class="reviewer-avatar">AK</div>
+              <div>
+                <div class="reviewer-name">Alisher Karimov</div>
+                <div class="review-date">2 kun oldin</div>
+              </div>
+            </div>
+            <div class="stars">★★★★★</div>
+          </div>
+          <p class="review-text">
+            Ajoyib quloqlik! Ovoz sifati juda yuqori, shovqinni yo'q qilish funksiyasi mukammal ishlaydi. Uzoq vaqt kiyib yurishga qulay. Tavsiya qilaman!
+          </p>
+        </div>
+
+        <div class="review-item">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <div class="reviewer-avatar">NS</div>
+              <div>
+                <div class="reviewer-name">Nodira Saidova</div>
+                <div class="review-date">1 hafta oldin</div>
+              </div>
+            </div>
+            <div class="stars">★★★★★</div>
+          </div>
+          <p class="review-text">
+            Batareya quvvati haqiqatan ham uzoq davom etadi. Dizayni chiroyli va zamonaviy. Narxi uchun juda yaxshi tanlov.
+          </p>
+        </div>
+
+        <div class="review-item">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <div class="reviewer-avatar">BO</div>
+              <div>
+                <div class="reviewer-name">Bekzod Ortiqov</div>
+                <div class="review-date">2 hafta oldin</div>
+              </div>
+            </div>
+            <div class="stars">★★★★☆</div>
+          </div>
+          <p class="review-text">
+            Yaxshi mahsulot, lekin narxi biroz qimmatroq. Ammo sifati bunga arziydi. Bluetooth aloqasi barqaror.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // URL dan mahsulot ID ni olish
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id') || 1;
+
+    // Rasmlar galereyasi
+    const images = [
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800",
+      "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800",
+      "https://images.unsplash.com/photo-1524678606370-a47ad25cb82a?w=800",
+      "https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=800"
+    ];
+
+    // Thumbnails yaratish
+    function initGallery() {
+      const thumbnailsDiv = document.getElementById('thumbnails');
+      thumbnailsDiv.innerHTML = '';
+      
+      images.forEach((img, index) => {
+        const thumb = document.createElement('div');
+        thumb.className = `thumbnail ${index === 0 ? 'active' : ''}`;
+        thumb.innerHTML = `<img src="${img}" alt="Thumbnail ${index + 1}" />`;
+        thumb.onclick = () => changeImage(index);
+        thumbnailsDiv.appendChild(thumb);
+      });
+    }
+
+    function changeImage(index) {
+      document.getElementById('mainImage').src = images[index];
+      document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
+        thumb.classList.toggle('active', i === index);
+      });
+    }
+
+    function addToCart() {
+      let cartData = JSON.parse(localStorage.getItem('cartData') || '{}');
+      const id = parseInt(productId);
+      
+      if (!cartData[id]) {
+        cartData[id] = 1;
+      } else {
+        cartData[id] += 1;
+      }
+      
+      localStorage.setItem('cartData', JSON.stringify(cartData));
+      
+      const btn = document.querySelector('.add-to-cart');
+      btn.textContent = '✓ Savatga qo\'shildi!';
+      btn.style.background = '#10b981';
+      
+      setTimeout(() => {
+        btn.textContent = '🛒 Savatga qo\'shish';
+        btn.style.background = '#7000ff';
+      }, 2000);
+    }
+
+    function toggleWishlist() {
+      const btn = document.querySelector('.wishlist-btn');
+      btn.style.background = '#ffe4e6';
+      btn.style.color = '#ef4444';
+      btn.innerHTML = `<svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+      </svg>`;
+      
+      setTimeout(() => {
+        btn.style.background = '#f3f4f6';
+        btn.style.color = '';
+      }, 2000);
+    }
+
+    // Mahsulot ma'lumotlarini yuklash (API dan)
+    async function loadProduct() {
+      try {
+        const response = await fetch(`https://fakestoreapi.com/products/${productId}`);
+        const product = await response.json();
+        
+        document.getElementById('productTitle').textContent = product.title;
+        document.getElementById('breadcrumbProduct').textContent = product.title.substring(0, 30) + '...';
+        document.getElementById('breadcrumbCategory').textContent = product.category;
+        document.getElementById('currentPrice').textContent = `$${product.price}`;
+        document.getElementById('oldPrice').textContent = `$${(product.price * 1.33).toFixed(0)}`;
+        document.getElementById('productDescription').textContent = product.description;
+        
+        if (product.image) {
+          images[0] = product.image;
+          document.getElementById('mainImage').src = product.image;
+          initGallery();
+        }
+      } catch (e) {
+        console.error('Mahsulot yuklashda xato:', e);
+      }
+    }
+
+    initGallery();
+    loadProduct();
+  </script>
+
+</body>
+</html>

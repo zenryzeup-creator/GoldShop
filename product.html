@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="productTitle">Mahsulot...</title>
+    <style>
+        /* (Sizning do'kon kodingizdagi asosiy CSS uslublari (header, body uslublari) bu yerga ko'chirilishi mumkin) */
+        
+        /* Faqat Product.html uchun asosiy uslublar */
+        .product-container {
+            max-width: 1280px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            min-height: 600px;
+        }
+
+        .product-gallery {
+            width: 40%;
+            padding: 30px;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 400px;
+            background: #f9fafb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .product-details {
+            width: 60%;
+            padding: 30px 30px 30px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .product-title-section h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 15px;
+            color: #6b7280;
+        }
+
+        .rating-stars {
+            color: gold;
+            margin-right: 10px;
+        }
+        
+        .price-box {
+            background: #f9f5ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .current-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: #7000ff;
+        }
+        
+        .old-price {
+            font-size: 16px;
+            color: #9ca3af;
+            text-decoration: line-through;
+            margin-left: 15px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .buy-now-btn {
+            padding: 15px 30px;
+            background: #7000ff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-grow: 1;
+        }
+
+        .buy-now-btn:hover {
+            background: #5f00d9;
+        }
+
+        .favorite-btn {
+            background: #f3f4f6;
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+            width: 100%;
+        }
+        /* ... qolgan uslublar ... */
+        
+    </style>
+</head>
+<body>
+
+    <div id="app" class="product-container">
+        <div class="loading">Mahsulot yuklanmoqda...</div>
+    </div>
+
+    <script>
+        let allProducts = [];
+
+        // 1. URL dan mahsulot ID'sini olish
+        function getProductIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        // 2. Mahsulot ma'lumotlarini yuklash
+        async function loadProductDetails(productId) {
+            const productContainer = document.getElementById("app");
+            productContainer.innerHTML = '<div class="loading">Mahsulot yuklanmoqda...</div>';
+            
+            if (!productId) {
+                productContainer.innerHTML = '<div class="loading">Mahsulot IDsi topilmadi!</div>';
+                return;
+            }
+
+            try {
+                // To'g'ridan-to'g'ri ID bo'yicha API chaqiruvi (agar API qo'llasa)
+                const response = await fetch(`https://fakestoreapi.com/products/${productId}`);
+                if(!response.ok) throw new Error(`HTTP xatolik: ${response.status}`);
+                const p = await response.json();
+
+                const product = {
+                    id: p.id,
+                    title: p.title || "Nomsiz mahsulot",
+                    price: p.price || 0,
+                    image: p.image || "",
+                    category: p.category || "Boshqa",
+                    description: p.description || "Tavsif mavjud emas.",
+                    rating: p.rating ? p.rating.rate : 0
+                };
+                
+                document.getElementById("productTitle").textContent = product.title;
+                renderProduct(product);
+
+            } catch(err) {
+                console.error("Mahsulotni yuklashda xatolik:", err);
+                productContainer.innerHTML = '<div class="loading">Mahsulot ma\'lumotlarini yuklab bo\'lmadi.</div>';
+            }
+        }
+
+        // 3. Mahsulotni sahifada ko'rsatish
+        function renderProduct(product) {
+            const productContainer = document.getElementById("app");
+            
+            // Narxni so'mga o'girish (Faqat namuna uchun)
+            const priceUZS = (product.price * 12500).toLocaleString('uz-UZ') + " so'm";
+            
+            productContainer.innerHTML = `
+                <div class="product-gallery">
+                    <div class="main-image">
+                        <img src="${product.image}" alt="${product.title}" />
+                    </div>
+                    </div>
+                <div class="product-details">
+                    <div>
+                        <div class="product-title-section">
+                            <h1>${product.title}</h1>
+                            <div class="product-rating">
+                                <span class="rating-stars">${'⭐'.repeat(Math.round(product.rating))} (${product.rating})</span>
+                                <span>${product.category}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="description-section">
+                            <h2>Mahsulot haqida</h2>
+                            <p style="color:#6b7280; line-height:1.6;">${product.description}</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="price-box">
+                            <span class="current-price">${priceUZS}</span>
+                            <span class="old-price">${((product.price + 50) * 12500).toLocaleString('uz-UZ')} so'm</span>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="buy-now-btn" onclick="addToCartAndGoCheckout(${product.id})">Savatga qo'shish</button>
+                            <button class="favorite-btn">
+                                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 010 6.364L12 20.364l7.682-7.682a4.5 4.5 0 01-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 01-6.364 0z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <p style="font-size:14px; color:#10b981; margin-top:15px;">✅ Tez yetkazib berish (2-3 kun)</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 4. Savat funksiyasi (market.html dagi singari)
+        function addToCartAndGoCheckout(id) {
+            let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+            if (!cart.includes(id)) {
+                cart.push(id);
+                localStorage.setItem("cart", JSON.stringify(cart));
+            }
+            // window.location.href = "checkout.html"; // To'lov sahifasiga yo'naltirish
+            alert("Mahsulot savatga qo'shildi! Savatga o'tish uchun: cart.html");
+        }
+
+        // 5. Sahifa yuklanganda ishga tushirish
+        const productId = getProductIdFromUrl();
+        loadProductDetails(productId);
+    </script>
+</body>
+</html>
